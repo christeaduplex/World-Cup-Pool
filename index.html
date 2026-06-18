@@ -6,32 +6,32 @@
   <title>Téa's World Cup Pool 2026 ⚽</title>
   <style>
     :root {
-      --bg:#07090f;--card:#0f1623;--card2:#161f2e;--border:#1e2d40;
-      --red:#e63946;--gold:#f4a261;--green:#2a9d8f;--text:#eef2f7;
-      --muted:#5a6a7e;--muted2:#8899aa;
+      --bg:#080c14;--card:#0f1520;--card2:#162030;--border:#1e2d46;
+      --blue:#3b82f6;--red:#ef4444;--gold:#f59e0b;--green:#10b981;
+      --text:#f1f5f9;--muted:#4b6080;--muted2:#7a90a8;
     }
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
     /* HEADER */
-    .hdr{position:sticky;top:0;z-index:100;background:rgba(7,9,15,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:13px 24px;display:flex;align-items:center;gap:12px}
-    .hdr-logo{font-size:24px}
-    .hdr-title{font-size:16px;font-weight:900;letter-spacing:2px;background:linear-gradient(90deg,var(--gold),#fff,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .hdr{position:sticky;top:0;z-index:100;background:rgba(8,12,20,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:12px}
+    .hdr-logo{font-size:22px}
+    .hdr-title{font-size:14px;font-weight:800;letter-spacing:1.5px;color:var(--text);text-transform:uppercase}
     .hdr-nav{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
-    .nav-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted2);cursor:pointer;font-size:12px;transition:all .2s}
-    .nav-btn:hover,.nav-btn.active{border-color:var(--gold);color:var(--gold)}
+    .nav-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted2);cursor:pointer;font-size:12px;transition:all .2s;font-family:inherit}
+    .nav-btn:hover,.nav-btn.active{border-color:var(--blue);color:var(--blue)}
 
     /* HERO */
-    .hero{text-align:center;padding:68px 24px 52px;background:radial-gradient(ellipse at 20% 60%,rgba(230,57,70,.18) 0%,transparent 55%),radial-gradient(ellipse at 80% 40%,rgba(244,162,97,.14) 0%,transparent 55%)}
-    .hero-ball{font-size:76px;display:block;margin-bottom:22px;animation:spin 12s linear infinite;filter:drop-shadow(0 0 22px rgba(244,162,97,.4))}
+    .hero{text-align:center;padding:72px 24px 56px;background:radial-gradient(ellipse at 25% 55%,rgba(59,130,246,.18) 0%,transparent 55%),radial-gradient(ellipse at 75% 45%,rgba(239,68,68,.14) 0%,transparent 55%)}
+    .hero-ball{font-size:72px;display:block;margin-bottom:24px;animation:spin 14s linear infinite;filter:drop-shadow(0 0 20px rgba(59,130,246,.4))}
     @keyframes spin{to{transform:rotate(360deg)}}
-    .hero h1{font-size:clamp(36px,7vw,68px);font-weight:900;line-height:1.05;margin-bottom:14px}
+    .hero h1{font-size:clamp(34px,7vw,64px);font-weight:900;line-height:1.05;margin-bottom:14px}
     .hero h1 em{font-style:normal;color:var(--gold)}
-    .hero p{font-size:17px;color:var(--muted2);max-width:440px;margin:0 auto 40px;line-height:1.6}
+    .hero p{font-size:16px;color:var(--muted2);max-width:440px;margin:0 auto 40px;line-height:1.65}
     .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
     .btn-hero{padding:15px 36px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;transition:all .25s;border:none;font-family:inherit}
-    .btn-hero-p{background:var(--red);color:#fff;box-shadow:0 0 30px rgba(230,57,70,.45)}
-    .btn-hero-p:hover{transform:translateY(-2px);box-shadow:0 0 46px rgba(230,57,70,.65)}
+    .btn-hero-p{background:var(--red);color:#fff;box-shadow:0 0 28px rgba(239,68,68,.4)}
+    .btn-hero-p:hover{transform:translateY(-2px);box-shadow:0 0 44px rgba(239,68,68,.6)}
     .btn-hero-s{background:transparent;color:var(--text);border:2px solid var(--border)}
     .btn-hero-s:hover{border-color:var(--gold);color:var(--gold)}
 
@@ -39,21 +39,39 @@
     .stats{display:flex;justify-content:center;border-top:1px solid var(--border);border-bottom:1px solid var(--border);flex-wrap:wrap}
     .stat{text-align:center;padding:26px 36px;border-right:1px solid var(--border)}
     .stat:last-child{border-right:none}
-    .stat-n{font-size:32px;font-weight:900;color:var(--gold);line-height:1}
-    .stat-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-top:4px}
+    .stat-n{font-size:30px;font-weight:900;color:var(--gold);line-height:1}
+    .stat-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-top:5px}
 
     /* SCORING */
-    .scoring{text-align:center;padding:32px 24px;background:var(--card);border-bottom:1px solid var(--border)}
-    .scoring h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px}
+    .scoring{text-align:center;padding:36px 24px;background:var(--card);border-bottom:1px solid var(--border)}
+    .scoring h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
+    .scoring-desc{font-size:13px;color:var(--muted2);margin-bottom:18px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.6}
     .pills{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
     .pill{padding:7px 16px;border-radius:30px;border:1px solid var(--border);background:var(--card2);font-size:12px}
-    .pill strong{color:var(--gold)}
+    .pill strong{color:var(--blue)}
+    .pill.champ{border-color:rgba(245,158,11,.35)}
+    .pill.champ strong{color:var(--gold)}
+    .pill-sep{color:var(--muted);font-size:13px;display:flex;align-items:center;flex-shrink:0}
+
+    /* SCORE CARDS */
+    .score-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:560px;margin:0 auto 12px}
+    .score-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 8px;text-align:center}
+    .score-card.sc-final{border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.07)}
+    .sc-round{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;line-height:1.3}
+    .sc-pts{font-size:22px;font-weight:900;color:var(--blue);line-height:1}
+    .sc-final .sc-pts{color:var(--gold)}
+    .sc-each{font-size:10px;color:var(--muted);margin-top:2px}
+    .sc-matches{font-size:11px;color:var(--muted2);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+    .sc-max{font-size:11px;color:var(--muted2);font-weight:700}
+    .score-total{max-width:560px;margin:0 auto;background:rgba(255,255,255,.03);border-radius:8px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted2)}
+    .score-total strong{color:var(--gold);font-size:16px}
+    @media(max-width:600px){.score-cards{grid-template-columns:repeat(2,1fr)}}
 
     /* LEADERBOARD */
-    .lb-preview{max-width:700px;margin:0 auto;padding:40px 24px 20px}
+    .lb-preview{max-width:700px;margin:0 auto;padding:44px 24px 20px}
     .lb-preview h2{font-size:20px;font-weight:800;margin-bottom:6px}
-    .lb-row{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:8px}
-    .lb-row:hover{border-color:rgba(255,255,255,.1)}
+    .lb-row{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;transition:border-color .2s}
+    .lb-row:hover{border-color:rgba(59,130,246,.25)}
     .lb-rank{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;background:var(--card2);color:var(--muted);flex-shrink:0}
     .lb-rank.r1{background:var(--gold);color:#000}
     .lb-rank.r2{background:#9ca3af;color:#000}
@@ -64,44 +82,41 @@
     .lb-score.top{color:var(--gold)}
     .lb-bar{width:80px;margin-left:12px}
     .lb-bar-bg{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
-    .lb-bar-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:2px}
+    .lb-bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--gold));border-radius:2px}
     .lb-detail{font-size:11px;color:var(--muted);margin-top:2px}
     .lb-full{max-width:860px;margin:0 auto;padding:40px 24px}
     .lb-table{width:100%;border-collapse:collapse;margin-top:20px}
     .lb-table th{text-align:left;padding:10px 16px;border-bottom:1px solid var(--border);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px}
     .lb-table td{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.03)}
-    .lb-table tr:hover td{background:rgba(255,255,255,.015)}
+    .lb-table tr:hover td{background:rgba(59,130,246,.04)}
 
     /* CONTAINERS */
     .ctr{max-width:680px;margin:0 auto;padding:40px 24px}
     .ctr-wide{max-width:920px;margin:0 auto;padding:40px 24px}
 
     /* PROGRESS */
-    .prog{margin-bottom:36px}
-    .prog-steps{display:flex;align-items:center}
-    .prog-item{display:flex;align-items:center;flex:1}
-    .prog-dot{width:30px;height:30px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);flex-shrink:0;transition:all .3s}
-    .prog-dot.done{background:var(--red);border-color:var(--red);color:#fff}
-    .prog-dot.active{border-color:var(--gold);color:var(--gold);box-shadow:0 0 10px rgba(244,162,97,.35)}
-    .prog-line{flex:1;height:2px;background:var(--border);transition:background .3s}
-    .prog-line.done{background:var(--red)}
-    .prog-labels{display:flex;margin-top:8px}
-    .prog-lbl{flex:1;text-align:center;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+    .prog{margin-bottom:36px;padding:4px 0}
+    .prog-steps{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px}
+    .prog-pill{padding:6px 14px;border-radius:30px;border:1px solid var(--border);background:var(--card2);font-size:11px;font-weight:700;color:var(--muted);transition:all .3s;white-space:nowrap}
+    .prog-pill.done{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.4);color:#4ade80}
+    .prog-pill.active{background:rgba(59,130,246,.18);border-color:var(--blue);color:var(--blue);box-shadow:0 0 10px rgba(59,130,246,.2)}
+    .prog-pill.active.final{background:rgba(245,158,11,.18);border-color:var(--gold);color:var(--gold);box-shadow:0 0 10px rgba(245,158,11,.2)}
+    .prog-arrow{color:var(--muted);font-size:12px;flex-shrink:0;padding:0 2px}
 
     /* PICKS */
-    .rbadge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;border:1px solid var(--red);background:rgba(230,57,70,.12);font-size:11px;color:var(--red);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:14px}
-    .rbadge.gold{border-color:var(--gold);background:rgba(244,162,97,.12);color:var(--gold)}
+    .rbadge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;border:1px solid var(--blue);background:rgba(59,130,246,.12);font-size:11px;color:var(--blue);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:14px}
+    .rbadge.gold{border-color:var(--gold);background:rgba(245,158,11,.12);color:var(--gold)}
     .pick-title{font-size:26px;font-weight:800;margin-bottom:8px}
     .pick-desc{font-size:14px;color:var(--muted2);margin-bottom:26px}
     .match-card{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;transition:border-color .2s}
-    .match-card.done{border-color:rgba(42,157,143,.3)}
+    .match-card.done{border-color:rgba(59,130,246,.3)}
     .match-lbl{padding:7px 16px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.015);display:flex;justify-content:space-between;align-items:center}
     .match-teams{display:flex}
     .tpick{flex:1;padding:17px 18px;cursor:pointer;display:flex;align-items:center;gap:11px;transition:all .15s;position:relative;border:none;background:transparent;color:var(--text);text-align:left;font-family:inherit}
     .tpick:first-of-type{border-right:1px solid var(--border)}
     .tpick:hover{background:rgba(255,255,255,.03)}
-    .tpick.sel{background:rgba(230,57,70,.14)}
-    .tpick.sel::after{content:'✓';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--red);font-weight:800;font-size:15px}
+    .tpick.sel{background:rgba(59,130,246,.14)}
+    .tpick.sel::after{content:'✓';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--blue);font-weight:800;font-size:15px}
     .t-flag{font-size:28px;line-height:1}
     .t-name{font-weight:700;font-size:14px}
     .vs{padding:17px 9px;color:var(--muted);font-size:11px;font-weight:700;display:flex;align-items:center;text-transform:uppercase;letter-spacing:1px;flex-shrink:0}
@@ -110,7 +125,7 @@
     .frow{margin-bottom:18px}
     .flabel{display:block;font-size:12px;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:600}
     .finput{width:100%;padding:13px 16px;background:var(--card);border:2px solid var(--border);border-radius:10px;color:var(--text);outline:none;font-size:15px;font-family:inherit;transition:border-color .2s}
-    .finput:focus{border-color:var(--gold)}
+    .finput:focus{border-color:var(--blue)}
     .finput::placeholder{color:var(--muted)}
 
     /* BUTTONS */
@@ -120,8 +135,8 @@
     .btn-green{background:var(--green);color:#fff}
     .btn-green:hover{opacity:.88}
     .btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted2)}
-    .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
-    .btn-ghost{background:transparent;color:var(--muted);border:none}
+    .btn-outline:hover{border-color:var(--blue);color:var(--blue)}
+    .btn-ghost{background:transparent;color:var(--muted);border:none;font-family:inherit;cursor:pointer}
     .btn-ghost:hover{color:var(--text)}
     .btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
     .btn-row{display:flex;gap:10px;margin-top:26px}
@@ -136,12 +151,12 @@
     /* SUCCESS */
     .success-view{text-align:center;padding:80px 24px;max-width:560px;margin:0 auto}
     .trophy-anim{font-size:72px;display:block;margin-bottom:18px;animation:pulse 1.4s ease-in-out infinite alternate}
-    @keyframes pulse{from{transform:scale(1);filter:drop-shadow(0 0 8px rgba(244,162,97,.3))}to{transform:scale(1.09);filter:drop-shadow(0 0 24px rgba(244,162,97,.7))}}
+    @keyframes pulse{from{transform:scale(1);filter:drop-shadow(0 0 8px rgba(245,158,11,.3))}to{transform:scale(1.09);filter:drop-shadow(0 0 24px rgba(245,158,11,.7))}}
     .bm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin:24px 0;text-align:left}
     .bm-hdr{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:4px;text-align:center}
     .bm-t{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:6px 7px;font-size:11px;margin-bottom:3px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .bm-t.p{border-color:rgba(230,57,70,.5);color:var(--red);background:rgba(230,57,70,.08)}
-    .bm-t.ch{border-color:var(--gold);color:var(--gold);background:rgba(244,162,97,.12);font-weight:700}
+    .bm-t.p{border-color:rgba(59,130,246,.5);color:var(--blue);background:rgba(59,130,246,.08)}
+    .bm-t.ch{border-color:var(--gold);color:var(--gold);background:rgba(245,158,11,.12);font-weight:700}
     .bm-sp{height:16px}
 
     /* ADMIN */
@@ -149,7 +164,7 @@
     .tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:30px;overflow-x:auto}
     .tab{padding:11px 20px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;font-size:13px;font-weight:600;transition:all .2s;white-space:nowrap;margin-bottom:-1px}
     .tab:hover{color:var(--text)}
-    .tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+    .tab.active{color:var(--blue);border-bottom-color:var(--blue)}
     .tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin-bottom:20px}
     .tinput-row{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:9px 12px}
     .tnum{font-size:11px;color:var(--muted);min-width:18px;font-weight:700}
@@ -162,29 +177,29 @@
     .rml{font-size:10px;color:var(--muted);min-width:80px;text-transform:uppercase;letter-spacing:1px}
     .rtbtn{padding:8px 15px;background:var(--card2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;font-size:13px;font-weight:600;transition:all .15s;font-family:inherit}
     .rtbtn:hover{border-color:var(--green);color:var(--green)}
-    .rtbtn.win{background:rgba(42,157,143,.15);border-color:var(--green);color:var(--green)}
+    .rtbtn.win{background:rgba(16,185,129,.15);border-color:var(--green);color:var(--green)}
     .rtvs{color:var(--muted);font-size:12px}
     .rtbd{color:var(--muted);font-size:13px;font-style:italic}
     .rtwon{margin-left:auto;font-size:12px;color:var(--green)}
     .p-row{display:flex;align-items:center;gap:12px;padding:12px 15px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:8px}
     .p-name{font-weight:700}
     .p-meta{font-size:12px;color:var(--muted2)}
-    .p-del{margin-left:auto;padding:5px 10px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:11px;transition:all .15s}
+    .p-del{margin-left:auto;padding:5px 10px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:11px;transition:all .15s;font-family:inherit}
     .p-del:hover{border-color:var(--red);color:var(--red)}
 
     /* MISC */
     .section-title{font-size:17px;font-weight:700;margin-bottom:6px}
     .section-desc{font-size:13px;color:var(--muted2);margin-bottom:18px;line-height:1.6}
-    .info-box{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);border-radius:10px;padding:13px 17px;margin-bottom:22px;font-size:13px;color:#93c5fd;line-height:1.6}
+    .info-box{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.25);border-radius:10px;padding:13px 17px;margin-bottom:22px;font-size:13px;color:#93c5fd;line-height:1.6}
     .info-box strong{color:#bfdbfe}
-    .warn-box{background:rgba(244,162,97,.1);border:1px solid rgba(244,162,97,.3);border-radius:10px;padding:13px 17px;margin-bottom:22px;font-size:13px;color:#fcd34d;line-height:1.6}
+    .warn-box{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:13px 17px;margin-bottom:22px;font-size:13px;color:#fcd34d;line-height:1.6}
     .ok-msg{color:var(--green);font-size:13px;font-weight:600}
     .err-msg{color:var(--red);font-size:13px;margin-top:6px}
     .empty-st{text-align:center;padding:40px 24px;color:var(--muted)}
     .empty-st .ei{font-size:44px;margin-bottom:12px}
     .refresh-note{font-size:11px;color:var(--muted);margin-top:16px}
-    .closed-banner{background:rgba(244,162,97,.1);border:1px solid rgba(244,162,97,.35);border-radius:12px;padding:18px 22px;text-align:center;max-width:560px;margin:24px auto}
-    .spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle}
+    .closed-banner{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:12px;padding:18px 22px;text-align:center;max-width:560px;margin:24px auto}
+    .spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle}
     @keyframes sp{to{transform:rotate(360deg)}}
     .loading-view{text-align:center;padding:80px 24px;color:var(--muted2)}
     .loading-view .spinner{width:40px;height:40px;border-width:3px;margin-bottom:16px;display:block;margin-left:auto;margin-right:auto}
@@ -207,7 +222,7 @@ const SUPABASE_URL      = 'https://eoieyjgprmohofwimqre.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_2rXt0_dn7XCUKqOPlZdVwg_pbpJZlhp';
 
 const ADMIN_PW  = 'worldcup2026';
-const MAX_SCORE = 48;
+const MAX_SCORE = 32;
 const PAIRS     = [[0,1],[2,3],[4,5],[6,7],[8,9],[10,11],[12,13],[14,15]];
 
 // ── State ──────────────────────────────────────────────────
@@ -316,7 +331,7 @@ function score(picks, results) {
   (picks.r16||[]).forEach((p,i)=>{ if(p!=null&&results.r16[i]!=null&&p===results.r16[i]){total+=1;r16++;} });
   (picks.qf ||[]).forEach((p,i)=>{ if(p!=null&&results.qf[i] !=null&&p===results.qf[i]) {total+=2;qf++; } });
   (picks.sf ||[]).forEach((p,i)=>{ if(p!=null&&results.sf[i] !=null&&p===results.sf[i]) {total+=4;sf++; } });
-  if(picks.final!=null&&results.final!=null&&picks.final===results.final){total+=24;fin=1;win=1;}
+  if(picks.final!=null&&results.final!=null&&picks.final===results.final){total+=8;fin=1;win=1;}
   return {total,r16,qf,sf,final:fin,winner:win};
 }
 
@@ -341,7 +356,7 @@ function render() {
 const hdr = () => `
   <div class="hdr">
     <span class="hdr-logo">⚽</span>
-    <span class="hdr-title">TÉA'S WORLD CUP POOL 2026</span>
+    <span class="hdr-title">Téa's World Cup Pool 2026</span>
     <div class="hdr-nav">
       <button class="nav-btn ${S.view==='home'?'active':''}" onclick="go('home')">Home</button>
       <button class="nav-btn ${S.view==='leaderboard'?'active':''}" onclick="go('leaderboard')">🏆 Leaderboard</button>
@@ -362,7 +377,7 @@ function renderHome() {
     <div class="hero fade">
       <span class="hero-ball">⚽</span>
       <h1>Who Lifts the<br><em>World Cup?</em></h1>
-      <p>Pick your bracket from the Round of 16 to the Champion and compete with friends!</p>
+      <p>Pick your winners round by round — from the Round of 16 all the way to the champion. Compete with friends for bragging rights.</p>
       <div class="hero-btns">
         ${poolOpen
           ? `<button class="btn-hero btn-hero-p" onclick="go('enter-name')">⚽ Submit My Bracket</button>`
@@ -378,20 +393,21 @@ function renderHome() {
 
     <div class="stats">
       <div class="stat"><div class="stat-n">${count}</div><div class="stat-l">Brackets In</div></div>
-      <div class="stat"><div class="stat-n">5</div><div class="stat-l">Rounds</div></div>
-      <div class="stat"><div class="stat-n">48</div><div class="stat-l">Max Points</div></div>
+      <div class="stat"><div class="stat-n">4</div><div class="stat-l">Rounds</div></div>
+      <div class="stat"><div class="stat-n">15</div><div class="stat-l">Matches to Pick</div></div>
       <div class="stat"><div class="stat-n">🏆</div><div class="stat-l">Glory Awaits</div></div>
     </div>
 
     <div class="scoring">
       <h3>How Scoring Works</h3>
-      <div class="pills">
-        <div class="pill">R16 <strong>1 pt</strong></div>
-        <div class="pill">Quarterfinals <strong>2 pts</strong></div>
-        <div class="pill">Semifinals <strong>4 pts</strong></div>
-        <div class="pill">Final <strong>8 pts</strong></div>
-        <div class="pill">🏆 Champion <strong>16 pts</strong></div>
+      <p class="scoring-desc">Pick a winner for each match across all four rounds. The further a team advances, the more your correct picks are worth.</p>
+      <div class="score-cards">
+        <div class="score-card"><div class="sc-round">Round of 16</div><div class="sc-pts">1</div><div class="sc-each">pt each</div><div class="sc-matches">8 matches</div><div class="sc-max">max 8 pts</div></div>
+        <div class="score-card"><div class="sc-round">Quarterfinals</div><div class="sc-pts">2</div><div class="sc-each">pts each</div><div class="sc-matches">4 matches</div><div class="sc-max">max 8 pts</div></div>
+        <div class="score-card"><div class="sc-round">Semifinals</div><div class="sc-pts">4</div><div class="sc-each">pts each</div><div class="sc-matches">2 matches</div><div class="sc-max">max 8 pts</div></div>
+        <div class="score-card sc-final"><div class="sc-round">Final</div><div class="sc-pts">8</div><div class="sc-each">pts</div><div class="sc-matches">1 match</div><div class="sc-max">max 8 pts</div></div>
       </div>
+      <div class="score-total">Grand total possible <strong>32 pts</strong></div>
     </div>
 
     ${count > 0 ? `<div class="lb-preview">
@@ -423,10 +439,10 @@ function renderLeaderboard() {
 
   return `<div class="lb-full fade">
     <h2>🏆 Leaderboard</h2>
-    <p style="font-size:13px;color:var(--muted2);margin-top:4px">${played} results in · ${S.participants.length} players · Max 48 pts${S.lastRefresh ? ` · Updated ${timeAgo(S.lastRefresh)}`:''}
+    <p style="font-size:13px;color:var(--muted2);margin-top:4px">${played} results in · ${S.participants.length} players · Max 32 pts${S.lastRefresh ? ` · Updated ${timeAgo(S.lastRefresh)}`:''}
     </p>
     <table class="lb-table">
-      <thead><tr><th>#</th><th>Player</th><th>Champion Pick</th><th>Score</th><th>R16</th><th>QF</th><th>SF</th><th>Final</th></tr></thead>
+      <thead><tr><th>#</th><th>Player</th><th>Final Pick</th><th>Score</th><th>R16</th><th>QF</th><th>SF</th><th>Final</th></tr></thead>
       <tbody>${S.participants.map((p,i) => {
         const pct = (p.score.total/MAX_SCORE*100);
         return `<tr>
@@ -452,7 +468,7 @@ function renderEnterName() {
     <div style="text-align:center;padding:30px 0 20px">
       <span style="font-size:48px">👤</span>
       <h2 style="font-size:26px;font-weight:800;margin:14px 0 8px">Enter your details</h2>
-      <p style="font-size:14px;color:var(--muted2)">Your email is only used for daily leaderboard updates — no spam ever.</p>
+      <p style="font-size:14px;color:var(--muted2)">After each match result, we'll send everyone a quick update with the scores and leaderboard. No spam ever.</p>
     </div>
     <div class="frow">
       <label class="flabel">Your Name</label>
@@ -508,7 +524,7 @@ function renderPickRound(round) {
     ${prog(cfg.step)}
     <div class="rbadge">Round ${cfg.step+1} of 4 — ${cfg.label}</div>
     <div class="pick-title">${cfg.label}</div>
-    <div class="pick-desc">${cfg.desc}${!allDone?` <span style="color:var(--gold);font-weight:600">(${cfg.count-picked} remaining)</span>`:''}</div>
+    <div class="pick-desc">${cfg.desc}${!allDone?` <span style="color:var(--blue);font-weight:600">(${cfg.count-picked} remaining)</span>`:''}</div>
     ${cards}
     <div class="btn-row">
       <button class="btn btn-outline" onclick="go('${cfg.prev}')">← Back</button>
@@ -527,9 +543,9 @@ function renderPickFinal() {
     ${prog(3)}
     <div class="rbadge gold">🏆 The Final — Round 4 of 4</div>
     <div class="pick-title">Who wins the World Cup?</div>
-    <div class="pick-desc">Your champion pick is worth a massive <strong style="color:var(--gold)">16 bonus points!</strong></div>
-    <div class="match-card" style="border-color:rgba(244,162,97,.4)">
-      <div class="match-lbl" style="color:var(--gold);border-color:rgba(244,162,97,.2)">
+    <div class="pick-desc">Do you really believe your pick can lift the trophy? Get it right and earn <strong style="color:var(--gold)">8 points</strong>.</div>
+    <div class="match-card" style="border-color:rgba(245,158,11,.4)">
+      <div class="match-lbl" style="color:var(--gold);border-color:rgba(245,158,11,.2)">
         <span>🏆 WORLD CUP FINAL</span>
         ${picked!=null?'<span style="color:var(--green);font-size:9px">✓ SELECTED</span>':''}
       </div>
@@ -559,8 +575,8 @@ function renderSuccess() {
     <span class="trophy-anim">🏆</span>
     <h2 style="font-size:28px;font-weight:900;margin-bottom:8px">You're in the pool!</h2>
     <p style="color:var(--muted2);font-size:15px;margin-bottom:6px">Bracket saved for <strong style="color:var(--text)">${esc(S.playerName)}</strong></p>
-    ${champ?`<p style="font-size:16px;margin-bottom:6px">Champion pick: <strong style="color:var(--gold)">${champ.flag} ${esc(champ.name)}</strong> 🏆</p>`:''}
-    <p style="font-size:13px;color:var(--muted2);margin-bottom:24px">Daily leaderboard updates will be sent to <strong style="color:var(--text)">${esc(S.playerEmail)}</strong></p>
+    ${champ?`<p style="font-size:16px;margin-bottom:6px">Your Final pick: <strong style="color:var(--gold)">${champ.flag} ${esc(champ.name)}</strong> 🏆</p>`:''}
+    <p style="font-size:13px;color:var(--muted2);margin-bottom:24px">Match updates will be sent to <strong style="color:var(--text)">${esc(S.playerEmail)}</strong></p>
     <div class="bm-grid">
       <div class="bm-hdr">R16</div><div class="bm-hdr">QF</div><div class="bm-hdr">SF</div><div class="bm-hdr">🏆</div>
       ${r16w.map(x=>`<div class="bm-t p">${x}</div>`).join('')}
@@ -688,21 +704,25 @@ function renderSettingsTab() {
     <span class="ok-msg" id="dlSaved" style="display:none;margin-left:10px">✓ Saved!</span>
   </div>
   <div style="margin-top:28px" class="warn-box">
-    <strong>🔑 Supabase keys</strong> are at the top of index.html. To update them, edit the file and re-upload to Netlify.
+    <strong>🔑 Supabase keys</strong> are at the top of index.html. To update them, edit the file and re-upload to GitHub.
   </div>`;
 }
 
 // PROGRESS BAR
 function prog(activeStep) {
   const steps = ['Round of 16','Quarterfinals','Semifinals','Final'];
-  let dots = '';
+  let parts = '';
   for (let i=0;i<steps.length;i++) {
-    const cls = i<activeStep?'done':i===activeStep?'active':'';
-    dots += `<div class="prog-item"><div class="prog-dot ${cls}">${i<activeStep?'✓':i+1}</div>${i<steps.length-1?`<div class="prog-line ${i<activeStep?'done':''}"></div>`:''}</div>`;
+    const isDone = i<activeStep;
+    const isActive = i===activeStep;
+    const isFinal = i===steps.length-1;
+    let cls = 'prog-pill';
+    if (isDone) cls += ' done';
+    else if (isActive) cls += ' active' + (isFinal?' final':'');
+    parts += `<div class="${cls}">${isDone?'✓ ':''}${steps[i]}</div>`;
+    if (i<steps.length-1) parts += `<span class="prog-arrow">→</span>`;
   }
-  return `<div class="prog"><div class="prog-steps">${dots}</div>
-    <div class="prog-labels">${steps.map((s,i)=>`<div class="prog-lbl" style="${i===activeStep?'color:var(--gold)':''}">${s}</div>`).join('')}</div>
-  </div>`;
+  return `<div class="prog"><div class="prog-steps">${parts}</div></div>`;
 }
 
 // ── ACTIONS ────────────────────────────────────────────────
