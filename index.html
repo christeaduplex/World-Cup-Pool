@@ -225,6 +225,26 @@ const ADMIN_PW  = 'worldcup2026';
 const MAX_SCORE = 80;
 const PAIRS     = [[0,1],[2,3],[4,5],[6,7],[8,9],[10,11],[12,13],[14,15],[16,17],[18,19],[20,21],[22,23],[24,25],[26,27],[28,29],[30,31]];
 
+// Round of 32 bracket — matches the official 2026 FIFA World Cup bracket
+const DEFAULT_TEAMS = [
+  {flag:'🇩🇪',name:'Germany'},      {flag:'🇵🇾',name:'Paraguay'},
+  {flag:'🇫🇷',name:'France'},        {flag:'🇸🇪',name:'Sweden'},
+  {flag:'🇿🇦',name:'South Africa'},  {flag:'🇨🇦',name:'Canada'},
+  {flag:'🇳🇱',name:'Netherlands'},   {flag:'🇲🇦',name:'Morocco'},
+  {flag:'🇵🇹',name:'Portugal'},      {flag:'🇭🇷',name:'Croatia'},
+  {flag:'🇪🇸',name:'Spain'},         {flag:'🇦🇹',name:'Austria'},
+  {flag:'🇺🇸',name:'United States'}, {flag:'🇧🇦',name:'Bosnia & Herz.'},
+  {flag:'🇧🇪',name:'Belgium'},       {flag:'🇸🇳',name:'Senegal'},
+  {flag:'🇧🇷',name:'Brazil'},        {flag:'🇯🇵',name:'Japan'},
+  {flag:'🇨🇮',name:'Ivory Coast'},   {flag:'🇳🇴',name:'Norway'},
+  {flag:'🇲🇽',name:'Mexico'},        {flag:'🇪🇨',name:'Ecuador'},
+  {flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',name:'England'},      {flag:'🇨🇩',name:'DR Congo'},
+  {flag:'🇦🇷',name:'Argentina'},     {flag:'🇨🇻',name:'Cape Verde'},
+  {flag:'🇦🇺',name:'Australia'},     {flag:'🇪🇬',name:'Egypt'},
+  {flag:'🇨🇭',name:'Switzerland'},   {flag:'🇩🇿',name:'Algeria'},
+  {flag:'🇨🇴',name:'Colombia'},      {flag:'🇬🇭',name:'Ghana'},
+];
+
 // ── State ──────────────────────────────────────────────────
 const S = {
   view: 'home',
@@ -286,7 +306,10 @@ async function loadData(silent = false) {
       sbGet('config',  '?select=*'),
     ]);
 
-    S.teams = teamsRows.map(t => ({ flag: t.flag, name: t.name }));
+    // If Supabase doesn't have all 32 teams yet, use DEFAULT_TEAMS
+    S.teams = teamsRows.length === 32
+      ? teamsRows.map(t => ({ flag: t.flag, name: t.name }))
+      : [...DEFAULT_TEAMS];
 
     S.config = {};
     configRows.forEach(r => { S.config[r.key] = r.value; });
@@ -637,25 +660,6 @@ function renderAdmin() {
     ${S.adminTab==='settings'     ? renderSettingsTab()     : ''}
   </div>`;
 }
-
-const DEFAULT_TEAMS = [
-  {flag:'🇩🇪',name:'Germany'},{flag:'🇵🇾',name:'Paraguay'},
-  {flag:'🇫🇷',name:'France'},{flag:'🇸🇪',name:'Sweden'},
-  {flag:'🇿🇦',name:'South Africa'},{flag:'🇨🇦',name:'Canada'},
-  {flag:'🇳🇱',name:'Netherlands'},{flag:'🇲🇦',name:'Morocco'},
-  {flag:'🇵🇹',name:'Portugal'},{flag:'🇭🇷',name:'Croatia'},
-  {flag:'🇪🇸',name:'Spain'},{flag:'🇦🇹',name:'Austria'},
-  {flag:'🇺🇸',name:'United States'},{flag:'🇧🇦',name:'Bosnia & Herz.'},
-  {flag:'🇧🇪',name:'Belgium'},{flag:'🇸🇳',name:'Senegal'},
-  {flag:'🇧🇷',name:'Brazil'},{flag:'🇯🇵',name:'Japan'},
-  {flag:'🇨🇮',name:'Ivory Coast'},{flag:'🇳🇴',name:'Norway'},
-  {flag:'🇲🇽',name:'Mexico'},{flag:'🇪🇨',name:'Ecuador'},
-  {flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',name:'England'},{flag:'🇨🇩',name:'DR Congo'},
-  {flag:'🇦🇷',name:'Argentina'},{flag:'🇨🇻',name:'Cape Verde'},
-  {flag:'🇦🇺',name:'Australia'},{flag:'🇪🇬',name:'Egypt'},
-  {flag:'🇨🇭',name:'Switzerland'},{flag:'🇩🇿',name:'Algeria'},
-  {flag:'🇨🇴',name:'Colombia'},{flag:'🇬🇭',name:'Ghana'},
-];
 
 function renderTeamsTab() {
   const slots = Array.from({length:32},(_,i)=>S.teams[i]||DEFAULT_TEAMS[i]||{flag:'',name:''});
