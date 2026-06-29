@@ -254,6 +254,7 @@ const S = {
   picks:{ r32:[], r16:[], qf:[], sf:[], final:null },
   submitting:false, submitError:null,
   adminAuthed:false, adminTab:'teams',
+  picksLookup:{ query:'', result:null, notFound:false },
 };
 
 // ── Supabase REST helpers ──────────────────────────────────
@@ -372,6 +373,7 @@ function render() {
     success:'renderSuccess',
     'admin-pw':'renderAdminPw',
     admin:'renderAdmin',
+    'my-picks':'renderMyPicks',
   };
   const fn = views[S.view];
   const content = typeof fn === 'function' ? fn() : (window[fn] ? window[fn]() : '');
@@ -385,6 +387,7 @@ const hdr = () => `
     <div class="hdr-nav">
       <button class="nav-btn ${S.view==='home'?'active':''}" onclick="go('home')">Home</button>
       <button class="nav-btn ${S.view==='leaderboard'?'active':''}" onclick="go('leaderboard')">🏆 Leaderboard</button>
+      <button class="nav-btn ${S.view==='my-picks'?'active':''}" onclick="go('my-picks')">My Picks</button>
       <button class="nav-btn" onclick="go('admin-pw')">Admin</button>
     </div>
   </div>`;
@@ -486,6 +489,133 @@ function renderLeaderboard() {
       }).join('')}</tbody>
     </table>
     <p class="refresh-note">Auto-refreshes every 90 seconds. <button class="btn-ghost" style="font-size:11px;padding:0" onclick="loadData()">Refresh now ↻</button></p>
+  </div>`;
+}
+
+// MY PICKS
+function renderMyPicks() {
+  if (!S.dataLoaded) return `<div class="loading-view fade"><div class="spinner"></div><p>Loading…</p></div>`;
+
+  const lk = S.picksLookup;
+
+  if (!lk.result) {
+    return `<div class="ctr fade">
+      <div style="text-align:center;padding:30px 0 20px">
+        <span style="font-size:48px">📋</span>
+        <h2 style="font-size:26px;font-weight:800;margin:14px 0 8px">View your picks</h2>
+        <p style="font-size:14px;color:var(--muted2)">Enter the name or email you used when you submitted your bracket.</p>
+      </div>
+      <div class="frow">
+        <label class="flabel">Name or email</label>
+        <input class="finput" id="plq" placeholder="First name, full name, or email…"
+          value="${esc(lk.query)}"
+          onkeydown="if(event.key==='Enter')lookupPicks()" autofocus />
+      </div>
+      ${lk.notFound ? `<p class="err-msg" style="display:block;margin-bottom:10px">No bracket found for "<strong>${esc(lk.query)}</strong>". Check the spelling and try again.</p>` : ''}
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="go('home')">← Back</button>
+        <button class="btn btn-red" onclick="lookupPicks()">Find my picks →</button>
+      </div>
+    </div>`;
+  }
+
+  const p  = lk.result;
+  const pk = p.picks;
+  const sc = p.score;
+
+  const ROUNDS = [
+    { key:'r32', label:'Round of 32',   pts:1, count:16, res: (S.results||{}).r32||[] },
+    { key:'r16', label:'Round of 16',   pts:2, count:8,  res: (S.results||{}).r16||[] },
+    { key:'qf',  label:'Quarterfinals', pts:4, count:4,  res: (S.results||{}).qf ||[] },
+    { key:'sf',  label:'Semifinals',    pts:8, count:2,  res: (S.results||{}).sf ||[] },
+  ];
+
+  let sections = '';
+  for (const rnd of ROUNDS) {
+    const rndPicks = pk[rnd.key] || [];
+    const played   = rnd.res.filter(r => r != null).length;
+    const correct  = sc[rnd.key];
+    const earned   = correct * rnd.pts;
+
+    const statusTxt = played === 0
+      ? `<span style="font-size:11px;color:var(--muted)">upcoming</span>`
+      : `<span style="font-size:11px;color:var(--green)">${correct} correct · ${earned} pt${earned!==1?'s':''}</span>`;
+
+    let rows = '';
+    for (let i = 0; i < rnd.count; i++) {
+      const teamIdx = rndPicks[i];
+      const team    = teamIdx != null ? S.teams[teamIdx] : null;
+      const resIdx  = rnd.res[i];
+      const pending = resIdx == null;
+      const ok      = !pending && teamIdx === resIdx;
+
+      const badge = pending
+        ? `<span style="font-size:11px;color:var(--muted);background:var(--card);border:1px solid var(--border);padding:3px 9px;border-radius:10px">upcoming</span>`
+        : ok
+        ? `<span style="font-size:11px;color:var(--green);background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);padding:3px 9px;border-radius:10px">✓ +${rnd.pts}pt${rnd.pts>1?'s':''}</span>`
+        : `<span style="font-size:11px;color:var(--red);background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);padding:3px 9px;border-radius:10px">✗</span>`;
+
+      rows += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--card2)">
+        <span style="color:${pending?'var(--muted2)':'var(--text)'}">
+          ${team ? `${team.flag} ${esc(team.name)}` : '<span style="color:var(--muted)">—</span>'}
+        </span>
+        ${badge}
+      </div>`;
+    }
+
+    sections += `<div style="padding:0 0 4px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0 6px;border-top:1px solid var(--border)">
+        <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px">${rnd.label}</span>
+        ${statusTxt}
+      </div>
+      ${rows}
+    </div>`;
+  }
+
+  const champIdx  = pk.final;
+  const champ     = champIdx != null ? S.teams[champIdx] : null;
+  const finalRes  = (S.results||{}).final;
+  const finalPend = finalRes == null;
+  const finalOk   = !finalPend && champIdx === finalRes;
+  const finalBadge = finalPend
+    ? `<span style="font-size:11px;color:var(--muted);background:var(--card);border:1px solid var(--border);padding:3px 9px;border-radius:10px">upcoming · 16 pts</span>`
+    : finalOk
+    ? `<span style="font-size:11px;color:var(--green);background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);padding:3px 9px;border-radius:10px">✓ +16 pts</span>`
+    : `<span style="font-size:11px;color:var(--red);background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);padding:3px 9px;border-radius:10px">✗</span>`;
+
+  sections += `<div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0 8px;border-top:1px solid var(--border)">
+      <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px">Final · champion pick</span>
+      ${finalBadge}
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;padding:4px 0 8px">
+      ${champ ? `<span style="font-size:26px">${champ.flag}</span><span style="color:${finalPend?'var(--muted2)':'var(--text)'}">${esc(champ.name)}</span>` : '<span style="color:var(--muted)">—</span>'}
+    </div>
+  </div>`;
+
+  const subDate = p.submitted_at
+    ? new Date(p.submitted_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})
+    : '';
+
+  return `<div class="ctr fade">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+      <div>
+        <h2 style="font-size:22px;font-weight:800;margin-bottom:4px">${esc(p.name)}</h2>
+        ${subDate ? `<p style="font-size:12px;color:var(--muted2)">Submitted ${subDate}</p>` : ''}
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:28px;font-weight:900;color:var(--gold);line-height:1">${sc.total}</div>
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">of ${MAX_SCORE} pts</div>
+      </div>
+    </div>
+    <div style="height:3px;background:var(--border);border-radius:3px;margin-bottom:4px">
+      <div style="width:${(sc.total/MAX_SCORE*100).toFixed(1)}%;height:3px;background:var(--gold);border-radius:3px"></div>
+    </div>
+    ${sections}
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn btn-outline" onclick="S.picksLookup={query:'',result:null,notFound:false};render()">← Search again</button>
+      <button class="btn btn-outline" onclick="go('leaderboard')">🏆 Leaderboard</button>
+    </div>
   </div>`;
 }
 
@@ -768,6 +898,19 @@ function go(view) {
   if (view==='admin'&&!S.adminAuthed) view='admin-pw';
   S.view = view; render();
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function lookupPicks() {
+  const q = (document.getElementById('plq')?.value || '').trim().toLowerCase();
+  if (!q) return;
+  S.picksLookup.query = q;
+  const match =
+    S.participants.find(p => p.email.toLowerCase() === q) ||
+    S.participants.find(p => p.name.toLowerCase() === q) ||
+    S.participants.find(p => p.name.toLowerCase().startsWith(q));
+  S.picksLookup.result   = match || null;
+  S.picksLookup.notFound = !match;
+  render();
 }
 
 function startPicks() {
