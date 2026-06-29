@@ -503,15 +503,15 @@ function renderMyPicks() {
       <div style="text-align:center;padding:30px 0 20px">
         <span style="font-size:48px">📋</span>
         <h2 style="font-size:26px;font-weight:800;margin:14px 0 8px">View your picks</h2>
-        <p style="font-size:14px;color:var(--muted2)">Enter the name or email you used when you submitted your bracket.</p>
+        <p style="font-size:14px;color:var(--muted2)">Enter the email address you used when you submitted your bracket.</p>
       </div>
       <div class="frow">
-        <label class="flabel">Name or email</label>
-        <input class="finput" id="plq" placeholder="First name, full name, or email…"
+        <label class="flabel">Email address</label>
+        <input class="finput" id="plq" type="email" placeholder="you@example.com"
           value="${esc(lk.query)}"
           onkeydown="if(event.key==='Enter')lookupPicks()" autofocus />
       </div>
-      ${lk.notFound ? `<p class="err-msg" style="display:block;margin-bottom:10px">No bracket found for "<strong>${esc(lk.query)}</strong>". Check the spelling and try again.</p>` : ''}
+      ${lk.notFound ? `<p class="err-msg" style="display:block;margin-bottom:10px">No bracket found for <strong>${esc(lk.query)}</strong>. Make sure you're using the exact email you submitted with.</p>` : ''}
       <div class="btn-row">
         <button class="btn btn-outline" onclick="go('home')">← Back</button>
         <button class="btn btn-red" onclick="lookupPicks()">Find my picks →</button>
@@ -904,10 +904,7 @@ function lookupPicks() {
   const q = (document.getElementById('plq')?.value || '').trim().toLowerCase();
   if (!q) return;
   S.picksLookup.query = q;
-  const match =
-    S.participants.find(p => p.email.toLowerCase() === q) ||
-    S.participants.find(p => p.name.toLowerCase() === q) ||
-    S.participants.find(p => p.name.toLowerCase().startsWith(q));
+  const match = S.participants.find(p => p.email.toLowerCase() === q);
   S.picksLookup.result   = match || null;
   S.picksLookup.notFound = !match;
   render();
