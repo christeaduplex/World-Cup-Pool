@@ -207,6 +207,27 @@
     @media(max-width:600px){.stat{padding:18px 16px}.bm-grid{grid-template-columns:repeat(2,1fr)}.lb-table th:nth-child(n+6),.lb-table td:nth-child(n+6){display:none}.score-cards{grid-template-columns:repeat(3,1fr)!important}}
     @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
     .fade{animation:fadeUp .28s ease both}
+
+    /* BRACKET */
+    .br-col{display:flex;flex-direction:column;flex-shrink:0}
+    .br-col-hdr{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;text-align:center;padding:0 6px;margin-bottom:10px;font-weight:700}
+    .br-conn-col{display:flex;flex-direction:column;flex-shrink:0;width:14px}
+    .br-match{background:var(--card);border:1px solid var(--border);border-radius:8px;width:144px;overflow:hidden;margin:3px 0}
+    .br-match-done{border-color:rgba(16,185,129,.3)}
+    .br-team{display:flex;align-items:center;gap:7px;padding:7px 10px}
+    .br-team:first-child{border-bottom:1px solid var(--border)}
+    .br-win{background:rgba(16,185,129,.1)}
+    .br-loss{opacity:.4}
+    .br-tbd{opacity:.4}
+    .br-flag{font-size:14px;line-height:1;width:18px;text-align:center;flex-shrink:0}
+    .br-name{font-size:11px;font-weight:600;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .br-check{font-size:10px;color:var(--green);margin-left:auto;font-weight:700;flex-shrink:0}
+    .br-spacer{height:6px}
+    .br-champ{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:14px 12px;width:112px;text-align:center}
+    .br-champ-icon{font-size:26px;margin-bottom:5px}
+    .br-champ-label{font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:5px}
+    .br-champ-flag{font-size:18px;margin-bottom:3px}
+    .br-champ-name{font-size:12px;font-weight:800;color:#fcd34d}
   </style>
 </head>
 <body>
@@ -364,7 +385,7 @@ function score(picks, results) {
 // ── Render ─────────────────────────────────────────────────
 function render() {
   const views = {
-    home:'renderHome', leaderboard:'renderLeaderboard',
+    home:'renderHome', leaderboard:'renderLeaderboard', bracket:'renderBracket',
     'enter-name':'renderEnterName',
     'pick-r32':()=>renderPickRound('r32'),
     'pick-r16':()=>renderPickRound('r16'),
@@ -412,6 +433,7 @@ function renderHome() {
           ? `<button class="btn-hero btn-hero-p" onclick="go('enter-name')">⚽ Submit My Bracket</button>`
           : `<button class="btn-hero btn-hero-p" style="opacity:.55;cursor:default" title="Pool not open yet">⚽ Pool Opens ${deadline}</button>`}
         <button class="btn-hero btn-hero-s" onclick="go('leaderboard')">🏆 Leaderboard</button>
+        <button class="btn-hero btn-hero-s" onclick="go('bracket')">📊 Bracket</button>
       </div>
     </div>
 
@@ -490,6 +512,135 @@ function renderLeaderboard() {
       }).join('')}</tbody>
     </table>
     <p class="refresh-note">Auto-refreshes every 90 seconds. <button class="btn-ghost" style="font-size:11px;padding:0" onclick="loadData()">Refresh now ↻</button></p>
+  </div>`;
+}
+
+// BRACKET
+function renderBracket() {
+  if (!S.dataLoaded) return `<div class="loading-view fade"><div class="spinner"></div><p>Loading…</p></div>`;
+
+  const T = S.teams;
+  const R = S.results;
+  const PAIRS = [[0,1],[2,3],[4,5],[6,7],[8,9],[10,11],[12,13],[14,15],[16,17],[18,19],[20,21],[22,23],[24,25],[26,27],[28,29],[30,31]];
+
+  function teamRow(idx, winnerIdx) {
+    if (idx == null) return `<div class="br-team br-tbd"><span class="br-flag"></span><span class="br-name" style="color:var(--muted)">TBD</span></div>`;
+    const t = T[idx] || {flag:'?',name:'Unknown'};
+    const isWin  = winnerIdx === idx;
+    const isLoss = winnerIdx != null && winnerIdx !== idx;
+    return `<div class="br-team ${isWin?'br-win':isLoss?'br-loss':''}">
+      <span class="br-flag">${t.flag}</span>
+      <span class="br-name">${esc(t.name)}</span>
+      ${isWin ? '<span class="br-check">✓</span>' : ''}
+    </div>`;
+  }
+
+  function matchCard(a, b, winner) {
+    const done = winner != null;
+    return `<div class="br-match ${done?'br-match-done':''}">
+      ${teamRow(a, winner)}${teamRow(b, winner)}
+    </div>`;
+  }
+
+  // Build each round's matches
+  // R32: 16 matches
+  let r32html = '';
+  for (let i = 0; i < 16; i++) {
+    const [a, b] = PAIRS[i];
+    r32html += matchCard(a, b, R.r32[i]);
+  }
+
+  // R16: 8 matches, participants are R32 winners
+  let r16html = '';
+  for (let i = 0; i < 8; i++) {
+    const a = R.r32[i*2], b = R.r32[i*2+1];
+    r16html += matchCard(a ?? null, b ?? null, R.r16[i]);
+    r16html += `<div class="br-spacer"></div>`;
+  }
+
+  // QF: 4 matches
+  let qfhtml = '';
+  for (let i = 0; i < 4; i++) {
+    const a = R.r16[i*2], b = R.r16[i*2+1];
+    qfhtml += matchCard(a ?? null, b ?? null, R.qf[i]);
+    qfhtml += `<div class="br-spacer" style="height:30px"></div>`;
+  }
+
+  // SF: 2 matches
+  let sfhtml = '';
+  for (let i = 0; i < 2; i++) {
+    const a = R.qf[i*2], b = R.qf[i*2+1];
+    sfhtml += matchCard(a ?? null, b ?? null, R.sf[i]);
+    sfhtml += `<div class="br-spacer" style="height:78px"></div>`;
+  }
+
+  // Final
+  const fa = R.sf[0], fb = R.sf[1];
+  const finalHtml = matchCard(fa ?? null, fb ?? null, R.final);
+
+  // Champion
+  const champHtml = R.final != null && T[R.final]
+    ? `<div class="br-champ">
+        <div class="br-champ-icon">🏆</div>
+        <div class="br-champ-label">Champion</div>
+        <div class="br-champ-flag">${T[R.final].flag}</div>
+        <div class="br-champ-name">${esc(T[R.final].name)}</div>
+      </div>`
+    : `<div class="br-champ"><div class="br-champ-icon">🏆</div><div class="br-champ-label">Champion</div><div style="font-size:12px;color:var(--muted);margin-top:4px">TBD</div></div>`;
+
+  const played = [...(R.r32||[]),...(R.r16||[]),...(R.qf||[]),...(R.sf||[])].filter(x=>x!=null).length + (R.final!=null?1:0);
+
+  return `<div class="ctr-wide fade">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+      <div>
+        <h2 style="font-size:20px;font-weight:800">📊 Bracket</h2>
+        <p style="font-size:13px;color:var(--muted2);margin-top:3px">${played} results in · Scroll right to follow the bracket</p>
+      </div>
+      <button class="btn btn-ghost" style="font-size:11px" onclick="loadData()">Refresh ↻</button>
+    </div>
+    <div style="overflow-x:auto;padding-bottom:12px">
+      <div style="display:flex;gap:0;min-width:860px;align-items:flex-start">
+
+        <div class="br-col">
+          <div class="br-col-hdr">Round of 32</div>
+          ${r32html}
+        </div>
+        <div class="br-conn-col" id="conn16"></div>
+        <div class="br-col">
+          <div class="br-col-hdr">Round of 16</div>
+          <div style="height:24px"></div>
+          ${r16html}
+        </div>
+        <div class="br-conn-col" id="connQF"></div>
+        <div class="br-col">
+          <div class="br-col-hdr">Quarterfinals</div>
+          <div style="height:57px"></div>
+          ${qfhtml}
+        </div>
+        <div class="br-conn-col" id="connSF"></div>
+        <div class="br-col">
+          <div class="br-col-hdr">Semifinals</div>
+          <div style="height:123px"></div>
+          ${sfhtml}
+        </div>
+        <div class="br-conn-col" id="connF"></div>
+        <div class="br-col">
+          <div class="br-col-hdr">Final</div>
+          <div style="height:238px"></div>
+          ${finalHtml}
+        </div>
+        <div style="display:flex;align-items:center;padding:0 16px;padding-top:24px">
+          ${champHtml}
+        </div>
+
+      </div>
+    </div>
+    <div style="display:flex;gap:14px;margin-top:14px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted2)"><div style="width:8px;height:8px;border-radius:50%;background:var(--green)"></div>Advanced</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted2)"><div style="width:8px;height:8px;border-radius:50%;background:var(--border)"></div>Upcoming</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted2)"><div style="width:8px;height:8px;border-radius:50%;background:rgba(245,158,11,.6)"></div>Champion</div>
+    </div>
+    <p class="refresh-note" style="margin-top:12px">Auto-refreshes every 90 seconds.</p>
   </div>`;
 }
 
