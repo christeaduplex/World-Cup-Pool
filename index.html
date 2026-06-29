@@ -270,8 +270,9 @@ async function sbGet(table, query = '') {
   return r.json();
 }
 
-async function sbUpsert(table, body) {
-  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+async function sbUpsert(table, body, onConflict) {
+  const qs = onConflict ? `?on_conflict=${onConflict}` : '';
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}${qs}`, {
     method: 'POST',
     headers: { ...SB_HEADERS, 'Prefer': 'resolution=merge-duplicates' },
     body: JSON.stringify(body),
@@ -1020,7 +1021,7 @@ async function saveResults() {
     (S.results.qf ||[]).forEach((w,i)=>{if(w!=null)rows.push({round:'qf', match_idx:i,winner_idx:w,updated_at:new Date().toISOString()});});
     (S.results.sf ||[]).forEach((w,i)=>{if(w!=null)rows.push({round:'sf', match_idx:i,winner_idx:w,updated_at:new Date().toISOString()});});
     if(S.results.final!=null)rows.push({round:'final',match_idx:0,winner_idx:S.results.final,updated_at:new Date().toISOString()});
-    if(rows.length) await sbUpsert('results',rows);
+    if(rows.length) await sbUpsert('results',rows,'round,match_idx');
     flash('rSaved');
   } catch(e){alert('Error saving results: '+e.message);}
 }
