@@ -431,7 +431,7 @@ function renderHome() {
       <div class="hero-btns">
         ${poolOpen
           ? `<button class="btn-hero btn-hero-p" onclick="go('enter-name')">⚽ Submit My Bracket</button>`
-          : `<button class="btn-hero btn-hero-p" style="opacity:.55;cursor:default" title="Pool not open yet">⚽ Pool Opens ${deadline}</button>`}
+          : `<button class="btn-hero btn-hero-p" style="opacity:.55;cursor:default" title="Pool not open yet">⚽ ${deadline}</button>`}
         <button class="btn-hero btn-hero-s" onclick="go('leaderboard')">🏆 Leaderboard</button>
         <button class="btn-hero btn-hero-s" onclick="go('bracket')">📊 Bracket</button>
       </div>
