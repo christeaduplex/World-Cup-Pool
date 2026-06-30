@@ -431,15 +431,15 @@ function renderHome() {
       <div class="hero-btns">
         ${poolOpen
           ? `<button class="btn-hero btn-hero-p" onclick="go('enter-name')">⚽ Submit My Bracket</button>`
-          : `<button class="btn-hero btn-hero-p" style="opacity:.55;cursor:default" title="Pool not open yet">⚽ ${deadline}</button>`}
+          : ''}
         <button class="btn-hero btn-hero-s" onclick="go('leaderboard')">🏆 Leaderboard</button>
         <button class="btn-hero btn-hero-s" onclick="go('bracket')">📊 Bracket</button>
       </div>
     </div>
 
     ${!poolOpen ? `<div class="closed-banner">
-      <p style="font-size:16px;font-weight:700;margin-bottom:4px">⏳ Pool opens ${esc(deadline)}</p>
-      <p style="font-size:13px;color:var(--muted2)">Teams will be confirmed after the group stage. Check back then to submit your bracket!</p>
+      <p style="font-size:16px;font-weight:700;margin-bottom:4px">🔒 Picks are locked in — good luck, everyone!</p>
+      <p style="font-size:13px;color:var(--muted2)">Follow along on the Leaderboard and Bracket as results come in.</p>
     </div>` : ''}
 
     <div class="stats">
