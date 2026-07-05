@@ -242,7 +242,9 @@
 const SUPABASE_URL      = 'https://eoieyjgprmohofwimqre.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_2rXt0_dn7XCUKqOPlZdVwg_pbpJZlhp';
 
-const ADMIN_PW  = 'worldcup2026';
+// Admin login goes through Supabase Auth (see RLS setup docs) — this is just
+// the account identity, not a secret. Its password lives only in Supabase.
+const ADMIN_EMAIL = 'tea.duplex@gmail.com';
 const MAX_SCORE = 80;
 const PAIRS     = [[0,1],[2,3],[4,5],[6,7],[8,9],[10,11],[12,13],[14,15],[16,17],[18,19],[20,21],[22,23],[24,25],[26,27],[28,29],[30,31]];
 
@@ -274,7 +276,7 @@ const S = {
   playerName:'', playerEmail:'',
   picks:{ r32:[], r16:[], qf:[], sf:[], final:null },
   submitting:false, submitError:null,
-  adminAuthed:false, adminTab:'teams',
+  adminAuthed:false, adminToken:null, adminBusy:false, adminError:null, adminTab:'teams',
   picksLookup:{ query:'', result:null, notFound:false },
 };
 
@@ -285,17 +287,26 @@ const SB_HEADERS = {
   'Content-Type': 'application/json',
 };
 
+// `admin:true` signs the request with the logged-in admin's Supabase Auth
+// token instead of the public anon key. RLS policies on teams/results/config
+// (and picks DELETE) require that token — the anon key alone can't write there.
+function sbHeaders(admin = false) {
+  const headers = { 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json' };
+  headers['Authorization'] = `Bearer ${admin && S.adminToken ? S.adminToken : SUPABASE_ANON_KEY}`;
+  return headers;
+}
+
 async function sbGet(table, query = '') {
   const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, { headers: SB_HEADERS });
   if (!r.ok) throw new Error(`Fetch ${table} failed (${r.status})`);
   return r.json();
 }
 
-async function sbUpsert(table, body, onConflict) {
+async function sbUpsert(table, body, onConflict, opts = {}) {
   const qs = onConflict ? `?on_conflict=${onConflict}` : '';
   const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}${qs}`, {
     method: 'POST',
-    headers: { ...SB_HEADERS, 'Prefer': 'resolution=merge-duplicates' },
+    headers: { ...sbHeaders(opts.admin), 'Prefer': 'resolution=merge-duplicates' },
     body: JSON.stringify(body),
   });
   if (!r.ok) {
@@ -304,16 +315,16 @@ async function sbUpsert(table, body, onConflict) {
   }
 }
 
-async function sbDelete(table, query) {
+async function sbDelete(table, query, opts = {}) {
   const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${query}`, {
-    method: 'DELETE', headers: SB_HEADERS,
+    method: 'DELETE', headers: sbHeaders(opts.admin),
   });
   if (!r.ok) throw new Error(`Delete from ${table} failed (${r.status})`);
 }
 
-async function sbPatch(table, query, body) {
+async function sbPatch(table, query, body, opts = {}) {
   const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${query}`, {
-    method: 'PATCH', headers: SB_HEADERS, body: JSON.stringify(body),
+    method: 'PATCH', headers: sbHeaders(opts.admin), body: JSON.stringify(body),
   });
   if (!r.ok) throw new Error(`Update ${table} failed (${r.status})`);
 }
@@ -914,9 +925,9 @@ function renderAdminPw() {
     <span class="cv-icon">🔐</span>
     <h2>Admin Panel</h2>
     <p>Manage teams, enter results, and view all participants.</p>
-    <input class="finput" id="pwi" type="password" placeholder="Password…" onkeydown="if(event.key==='Enter')checkPw()" style="text-align:center;font-size:18px;margin-bottom:14px" autofocus />
-    <p class="err-msg" id="pwe" style="display:none;margin-bottom:12px">Incorrect password.</p>
-    <button class="btn btn-red" style="width:100%;padding:15px" onclick="checkPw()">Enter →</button>
+    <input class="finput" id="pwi" type="password" placeholder="Password…" onkeydown="if(event.key==='Enter')checkPw()" style="text-align:center;font-size:18px;margin-bottom:14px" autofocus ${S.adminBusy?'disabled':''} />
+    <p class="err-msg" id="pwe" style="${S.adminError?'':'display:none;'}margin-bottom:12px">${S.adminError||'Incorrect password.'}</p>
+    <button class="btn btn-red" style="width:100%;padding:15px" onclick="checkPw()" ${S.adminBusy?'disabled':''}>${S.adminBusy?'Checking…':'Enter →'}</button>
     <button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="go('home')">← Back</button>
   </div>`;
 }
@@ -1132,14 +1143,30 @@ async function submitBracket() {
   }
 }
 
-function checkPw() {
+async function checkPw() {
   const el=document.getElementById('pwi');
-  if(!el) return;
-  if(el.value===ADMIN_PW){S.adminAuthed=true;go('admin');}
-  else{const e=document.getElementById('pwe');if(e)e.style.display='block';el.value='';el.focus();}
+  if(!el||S.adminBusy) return;
+  const password=el.value;
+  S.adminBusy=true; S.adminError=null; render();
+  try {
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method:'POST',
+      headers:{ 'apikey':SUPABASE_ANON_KEY, 'Content-Type':'application/json' },
+      body: JSON.stringify({ email: ADMIN_EMAIL, password }),
+    });
+    const data = await r.json();
+    if(!r.ok || !data.access_token) throw new Error();
+    S.adminToken=data.access_token; S.adminAuthed=true; S.adminBusy=false;
+    go('admin');
+  } catch(e) {
+    S.adminBusy=false;
+    S.adminError='Incorrect password.';
+    render();
+    document.getElementById('pwi')?.focus();
+  }
 }
 
-function logout(){S.adminAuthed=false;go('home');}
+function logout(){S.adminAuthed=false;S.adminToken=null;S.adminError=null;go('home');}
 function aTab(t){S.adminTab=t;render();}
 
 function setRes(round,idx,teamIdx){
@@ -1157,8 +1184,8 @@ async function saveTeams() {
     if(name) teams.push({slot_index:i,flag,name});
   }
   try {
-    await sbDelete('teams','slot_index=gte.0');
-    await sbUpsert('teams',teams);
+    await sbDelete('teams','slot_index=gte.0',{admin:true});
+    await sbUpsert('teams',teams,undefined,{admin:true});
     S.teams=teams.map(t=>({flag:t.flag,name:t.name}));
     flash('tSaved');
   } catch(e){alert('Error saving teams: '+e.message);}
@@ -1172,27 +1199,27 @@ async function saveResults() {
     (S.results.qf ||[]).forEach((w,i)=>{if(w!=null)rows.push({round:'qf', match_idx:i,winner_idx:w,updated_at:new Date().toISOString()});});
     (S.results.sf ||[]).forEach((w,i)=>{if(w!=null)rows.push({round:'sf', match_idx:i,winner_idx:w,updated_at:new Date().toISOString()});});
     if(S.results.final!=null)rows.push({round:'final',match_idx:0,winner_idx:S.results.final,updated_at:new Date().toISOString()});
-    if(rows.length) await sbUpsert('results',rows,'round,match_idx');
+    if(rows.length) await sbUpsert('results',rows,'round,match_idx',{admin:true});
     flash('rSaved');
   } catch(e){alert('Error saving results: '+e.message);}
 }
 
 async function setConfig(key,value) {
-  try{await sbPatch('config',`key=eq.${key}`,{value});S.config[key]=value;render();}
+  try{await sbPatch('config',`key=eq.${key}`,{value},{admin:true});S.config[key]=value;render();}
   catch(e){alert('Error: '+e.message);}
 }
 
 async function saveDeadline() {
   const val=document.getElementById('dlInput')?.value.trim();
   if(!val) return;
-  try{await sbPatch('config','key=eq.deadline',{value:val});S.config.deadline=val;flash('dlSaved');}
+  try{await sbPatch('config','key=eq.deadline',{value:val},{admin:true});S.config.deadline=val;flash('dlSaved');}
   catch(e){alert('Error: '+e.message);}
 }
 
 async function deleteP(email) {
   if(!email||!confirm(`Remove ${email} from the pool?`)) return;
   try{
-    await sbDelete('picks',`email=eq.${encodeURIComponent(email)}`);
+    await sbDelete('picks',`email=eq.${encodeURIComponent(email)}`,{admin:true});
     await loadData(true);render();
   }catch(e){alert('Error: '+e.message);}
 }
