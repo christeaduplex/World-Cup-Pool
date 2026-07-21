@@ -199,6 +199,14 @@
     .empty-st .ei{font-size:44px;margin-bottom:12px}
     .refresh-note{font-size:11px;color:var(--muted);margin-top:16px}
     .closed-banner{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:12px;padding:18px 22px;text-align:center;max-width:560px;margin:24px auto}
+    .champ-spotlight{max-width:640px;margin:28px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0 24px}
+    .champ-card{background:linear-gradient(180deg,rgba(245,158,11,.12),rgba(245,158,11,.03));border:1px solid rgba(245,158,11,.35);border-radius:16px;padding:26px 20px;text-align:center}
+    .champ-card-icon{font-size:34px;margin-bottom:10px;display:block}
+    .champ-card-label{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:10px}
+    .champ-card-flag{font-size:30px;margin-bottom:4px}
+    .champ-card-name{font-size:19px;font-weight:900;color:#fcd34d}
+    .champ-card-sub{font-size:12px;color:var(--muted2);margin-top:5px}
+    @media(max-width:600px){.champ-spotlight{grid-template-columns:1fr}}
     .spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle}
     @keyframes sp{to{transform:rotate(360deg)}}
     .loading-view{text-align:center;padding:80px 24px;color:var(--muted2)}
@@ -430,15 +438,21 @@ function renderHome() {
   if (!S.dataLoaded) return `<div class="loading-view fade"><div class="spinner"></div><p>Loading…</p></div>`;
   if (S.dataError)   return `<div class="loading-view fade"><p style="color:var(--red)">⚠️ ${esc(S.dataError)}<br><br><button class="btn btn-outline" onclick="loadData()">Try again</button></p></div>`;
 
-  const poolOpen = S.config.pool_open === 'true';
-  const deadline = S.config.deadline || 'June 27, 2026';
-  const count    = S.participants.length;
+  const poolOpen   = S.config.pool_open === 'true';
+  const count      = S.participants.length;
+  const isComplete = !!(S.results && S.results.final != null);
+  const champTeam  = isComplete ? S.teams[S.results.final] : null;
+  const poolChamp  = isComplete ? S.participants[0] : null;
 
   return `
     <div class="hero fade">
-      <span class="hero-ball">⚽</span>
-      <h1>Who Lifts the<br><em>World Cup?</em></h1>
-      <p>Pick your winners round by round — from the Round of 16 all the way to the champion. Compete with friends for bragging rights.</p>
+      ${isComplete
+        ? `<span class="trophy-anim">🏆</span>
+           <h1>${champTeam.flag} ${esc(champTeam.name)}<br><em>Are World Champions!</em></h1>
+           <p>The 2026 World Cup is in the books and the pool is officially closed. Congrats to everyone who played — see who took home the bragging rights below.</p>`
+        : `<span class="hero-ball">⚽</span>
+           <h1>Who Lifts the<br><em>World Cup?</em></h1>
+           <p>Pick your winners round by round — from the Round of 16 all the way to the champion. Compete with friends for bragging rights.</p>`}
       <div class="hero-btns">
         ${poolOpen
           ? `<button class="btn-hero btn-hero-p" onclick="go('enter-name')">⚽ Submit My Bracket</button>`
@@ -448,7 +462,22 @@ function renderHome() {
       </div>
     </div>
 
-    ${!poolOpen ? `<div class="closed-banner">
+    ${isComplete ? `<div class="champ-spotlight fade">
+      <div class="champ-card">
+        <span class="champ-card-icon">🌍</span>
+        <div class="champ-card-label">World Cup Champion</div>
+        <div class="champ-card-flag">${champTeam.flag}</div>
+        <div class="champ-card-name">${esc(champTeam.name)}</div>
+      </div>
+      <div class="champ-card">
+        <span class="champ-card-icon">🏆</span>
+        <div class="champ-card-label">Pool Champion</div>
+        <div class="champ-card-name">${esc(poolChamp?.name || '—')}</div>
+        <div class="champ-card-sub">${poolChamp ? `${poolChamp.score.total} / ${MAX_SCORE} pts` : ''}</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:13px;color:var(--muted2);margin-top:14px">🔒 Pool closed — thanks for playing, everyone!</p>`
+    : !poolOpen ? `<div class="closed-banner">
       <p style="font-size:16px;font-weight:700;margin-bottom:4px">🔒 Picks are locked in — good luck, everyone!</p>
       <p style="font-size:13px;color:var(--muted2)">Follow along on the Leaderboard and Bracket as results come in.</p>
     </div>` : ''}
@@ -474,7 +503,7 @@ function renderHome() {
     </div>
 
     ${count > 0 ? `<div class="lb-preview">
-      <h2>Current Standings</h2>
+      <h2>${isComplete ? 'Final Standings' : 'Current Standings'}</h2>
       <p style="font-size:13px;color:var(--muted2);margin-bottom:16px">${S.lastRefresh ? `Updated ${timeAgo(S.lastRefresh)}` : ''}</p>
       ${S.participants.slice(0,5).map(lbRow).join('')}
       ${count > 5 ? `<p style="text-align:center;margin-top:14px"><button class="btn btn-outline" onclick="go('leaderboard')">View all ${count} players →</button></p>` : ''}
